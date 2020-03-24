@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Order
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Place an order</h1><br>
+
+<ul>
+   <h3>Your shopping</h3><br>
+{% for item in cart %}
+  <li>
+  	{{ item.quantity }}x {{ item.product.name }} ${{ item.total_price }}
+  </li>
+{% endfor %}
+
+{% if cart.coupon %}
+  <li>"{{ cart.coupon.code }}" coupon ({{ cart.coupon.discount }}% off)</li>
+  <li>-${{ cart.get_discount }}</li>
+{% endif %}
+
+  <p>Total: ${{ cart.get_total_price_after_coupon }}</p>
+
+
+</ul><br>
+
+<form action="." method="post">
+	{% for field in form %}
+	  <div>
+	  	{{ field.errors }}
+	  	{{ field.label_tag }}<br>
+	  	{{ field }}
+	  </div>
+	{% endfor %}
+	{% csrf_token %}
+	<input type="submit" value="Place order">
+</form>
+
+{% endblock %}

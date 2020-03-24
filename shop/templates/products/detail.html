@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ product.name }}-My shop
+{% endblock %}
+
+{% block content %}
+
+  <h3>category: "<a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>"</h3><br>
+  <h1>{{ product.name }}</h1><br>
+  <a href="{{ product.image.url }}">
+  	<img src="{{ product.image.url }}">
+  </a><br>
+  <p>${{ product.price }}</p><br>
+  <form action="{% url 'cart:cart_add' product.id %}" method="post">
+    {{ form }}
+    {% csrf_token %}
+    <input type="submit" value="Add to cart">
+  </form>
+  <p>{{ product.description|linebreaks }}</p>
+  
+  <br><br><br><br>
+
+
+  <h2>Similar products</h2><br><br><br>
+
+  {% for product in similar_products %}
+    <a href="{{ product.get_absolute_url }}">
+      {% load thumbnail %}
+        {% thumbnail product.image "200x200" crop="100%" as im %}
+        <img src="{{ im.url }}">
+      {% endthumbnail %}
+    </a><br>
+    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
+    <p>${{ product.price }}</p>
+    <p>{{ product.description|truncatewords:5 }}...</p><br><br><br>
+  {% endfor %}
+
+
+
+
+
+{% endblock %}

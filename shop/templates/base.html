@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load static %}
+	<title>
+	 {% block title %}
+	 {% endblock %}
+	</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+</head>
+<body>
+	<div id="header">
+	  <a href="/" class="logo">My shop</a>
+	  <a href="{% url 'shop:product_list' %}">Home</a>
+	</div>
+	<ul class="alert alert{{ messages.tags }}">
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	<div id="subheader">
+	  {% if cart|length > 0 %}
+	    Your cart: <a href="{% url 'cart:cart_detail' %}">{{ cart|length }} item{{ cart|length|pluralize }} , ${{ cart.get_total_price }}</a>
+	  {% else %}
+	    Yoyr cart is empty
+	  {% endif %}
+	</div>
+	<div id="content">
+  {% block content %}
+  {% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Shopping cart
+{% endblock %}
+
+{% block content %}
+
+<h1>Shopping cart</h1><br>
+<table>
+  <tr>
+  <thead>
+    <th>IMAGE</th>
+    <th>NAME</th>
+    <th>QUANTITY</th>
+    <th>REMOVE</th>
+    <th>PRICE</th>
+    <th>UNIT PRICE</th>
+  </thead>
+  </tr>
+  {% for item in cart %}
+  <tr>
+    <td>
+      <a href="{{ item.product.get_absolute_url }}">
+      	{% load thumbnail %}
+      	  {% thumbnail item.product.image "200x200" crop="100%" as im %}
+      	  <img src="{{ im.url }}">
+      	{% endthumbnail %}
+      </a>
+    </td>
+    <td><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
+    <td>
+      <form action="{% url 'cart:cart_add' item.product.id %}" method="post">
+        {{ item.update_product_quantity.quantity }}
+        {{ item.update_product_quantity.update }}
+        {% csrf_token %}
+        <input type="submit" value="Update">
+      </form>
+    </td>
+    <td><a href="{% url 'cart:cart_remove' item.product.id %}">Remove</a></td>
+    <td>${{ item.total_price }}</td>
+    <td>${{ item.price }}</td>
+  </tr>
+  {% endfor %}
+
+    {% if cart.coupon %}
+      <tr class="subtotal">
+        <td>Subtotal</td>
+        <td colspan="4"></td>
+        <td>${{ cart.get_total_price|floatformat:"2" }}</td>
+      </tr>
+      <tr>
+        <td>
+          "{{ cart.coupon.code }}" coupon({{ cart.coupon.discount }}% off)
+        </td>
+        <td colspan="4"></td>
+        <td>-${{ cart.get_discount|floatformat:"2" }}</td>
+      </tr>
+    {% endif %}
+
+    <tr>
+      <td>Total</td>
+      <td colspan="4"></td>
+      <td>${{ cart.get_total_price_after_coupon|floatformat:"2" }}</td>
+    </tr>
+
+</table><br>
+<h3>Apply a coupon from here</h3>
+<form action="{% url 'coupons:coupon_apply' %}" method="post">
+
+    {{ form }}
+    {% csrf_token %}
+    <input type="submit" value="Apply coupon">
+  </form><br><br>
+<a class="button light" href="{% url 'shop:product_list' %}">Continiue shopping</a>
+<a class="button light" href="{% url 'orders:order_create' %}">Check out</a>
+
+
+{% endblock %}
