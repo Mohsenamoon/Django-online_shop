@@ -11,7 +11,7 @@ class Category(models.Model):
 	def save(self , *args , **kwargs):
 
 		self.slug = slugify(self.name)
-		return super(Category,self).save(*args , **kwargs)
+		return super(Category,self).save()
 
 	def get_absolute_url(self):
 
@@ -37,7 +37,7 @@ class Product(models.Model):
 	def save(self , *args , **kwargs):
 
 		self.slug = slugify(self.name)
-		return super(Product,self).save(*args , **kwargs)
+		return super(Product,self).save()
 
 	def get_absolute_url(self):
 
